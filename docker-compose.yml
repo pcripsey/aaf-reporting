@@ -1,24 +1,20 @@
 services:
   backend:
-    build:
-      context: ./backend
+    image: pcripsey/aaf-reporting-backend:latest
     ports:
-      - '5000:5000'
+      - '${BACKEND_HOST_PORT:-5000}:${BACKEND_CONTAINER_PORT:-5000}'
     env_file:
       - .env
     environment:
-      - PORT=5000
-      - FRONTEND_ORIGIN=http://localhost:3000
+      - PORT=${BACKEND_CONTAINER_PORT:-5000}
+      - FRONTEND_ORIGIN=${FRONTEND_ORIGIN:-http://localhost:3000}
     networks:
       - app-network
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000}
+    image: pcripsey/aaf-reporting-frontend:latest
     ports:
-      - '3000:80'
+      - '${FRONTEND_HOST_PORT:-3000}:80'
     depends_on:
       - backend
     networks:
